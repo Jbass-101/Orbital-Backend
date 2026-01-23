@@ -1,53 +1,78 @@
 package com.jbass.routes
 
+import com.jbass.domain.model.SubscriptionCommand
 import com.jbass.domain.model.DeviceCommand
 import com.jbass.domain.repository.DeviceRepository
+
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.serialization.json.Json
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArraySet
 
-/**
- * Thread-safe set of all active WebSocket sessions
- */
-private val sessions = ConcurrentHashMap.newKeySet<DefaultWebSocketServerSession>()
+// ---- Client session tracking ----
+
+data class ClientSession(
+    val session: DefaultWebSocketServerSession,
+    val subscribedZones: MutableSet<String> = mutableSetOf()
+)
+
+private val clients = CopyOnWriteArraySet<ClientSession>()
+
+// ---- WebSocket route ----
 
 fun Route.deviceRoutes(repository: DeviceRepository) {
     webSocket("/device") {
-        sessions += this
-        val log = this.call.application.log
+
+        val client = ClientSession(this)
+        clients += client
+        val log = call.application.log
 
         try {
             // Send initial state
-            val initialState = Json.encodeToString(repository.getAll())
-            send(initialState)
+            send(Json.encodeToString(repository.getAll()))
 
             for (frame in incoming) {
-                if (frame is Frame.Text) {
-                    try {
-                        // Deserialize the command instead of full device
-                        val command = Json.decodeFromString<DeviceCommand>(frame.readText())
+                if (frame !is Frame.Text) continue
 
-                        // Update the device
-                        val device = repository.getById(command.deviceId)
-                        if (device != null) {
-                            val updatedDevice = device.copy(state = command.newState)
-                            if (repository.update(updatedDevice)) {
-                                // Broadcast only the updated device
-                                val updatedJson = Json.encodeToString(updatedDevice)
-                                sessions.forEach { it.send(updatedJson) }
+                val msg = frame.readText()
+
+                try {
+                    // ---- Subscription handling ----
+                    if (msg.contains("subscribeZones")) {
+                        val sub = Json.decodeFromString<SubscriptionCommand>(msg)
+                        client.subscribedZones.addAll(sub.subscribeZones)
+                        client.subscribedZones.removeAll(sub.unsubscribeZones)
+                        continue
+                    }
+
+                    // ---- Device command handling ----
+                    val command = Json.decodeFromString<DeviceCommand>(msg)
+
+                    val device = repository.getById(command.deviceId) ?: continue
+                    val updated = device.copy(state = command.newState)
+
+                    if (repository.update(updated)) {
+                        val payload = Json.encodeToString(updated)
+
+                        clients.forEach { c ->
+                            if (
+                                command.zoneId == null ||
+                                c.subscribedZones.contains(command.zoneId)
+                            ) {
+                                c.session.send(payload)
                             }
                         }
-                    } catch (e: Exception) {
-                        log.error("Failed to process WebSocket command", e)
                     }
+
+                } catch (e: Exception) {
+                    log.error("WebSocket message processing failed", e)
                 }
             }
         } finally {
-            sessions -= this
-            log.info("WebSocket session closed: $this")
+            clients -= client
+            log.info("WebSocket client disconnected")
         }
     }
 }
