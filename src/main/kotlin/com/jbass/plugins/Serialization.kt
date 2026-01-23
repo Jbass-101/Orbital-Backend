@@ -1,4 +1,4 @@
-package plugins
+package com.jbass.plugins
 
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*

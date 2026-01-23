@@ -1,6 +1,6 @@
-package domain.repository
+package com.jbass.domain.repository
 
-import domain.model.SmartDevice
+import com.jbass.domain.model.SmartDevice
 
 /**Interface so we can attach to Remote or local database*/
 interface DeviceRepository {

@@ -1,11 +1,11 @@
-package data.mock
+package com.jbass.data.mock
 
-import domain.model.ClimateMode
-import domain.model.DeviceMetadata
-import domain.model.DeviceState
-import domain.model.DeviceType
-import domain.model.SmartDevice
-import domain.model.Zone
+import com.jbass.domain.model.ClimateMode
+import com.jbass.domain.model.DeviceMetadata
+import com.jbass.domain.model.DeviceState
+import com.jbass.domain.model.DeviceType
+import com.jbass.domain.model.SmartDevice
+import com.jbass.domain.model.Zone
 import com.jbass.util.IdGenerator
 
 

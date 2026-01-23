@@ -1,7 +1,7 @@
-package data.repository
+package com.jbass.data.repository
 
-import domain.model.SmartDevice
-import domain.repository.DeviceRepository
+import com.jbass.domain.model.SmartDevice
+import com.jbass.domain.repository.DeviceRepository
 import java.util.concurrent.ConcurrentHashMap
 
 class InMemoryDeviceRepository(

@@ -1,4 +1,4 @@
-package domain.model
+package com.jbass.domain.model
 
 import kotlinx.serialization.Serializable
 
