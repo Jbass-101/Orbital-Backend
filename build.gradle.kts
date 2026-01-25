@@ -7,6 +7,23 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "2.2.21"
 }
 
+java {
+    toolchain {
+        // Forces both Java and Kotlin to use JDK 24
+        languageVersion.set(JavaLanguageVersion.of(24))
+    }
+}
+
+tasks.withType<JavaExec> {
+    // Fixes the "Restricted method" warnings for Netty
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
+}
+
+tasks.withType<Test> {
+    // Ensures tests also have native access
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
+}
+
 group = "com.jbass"
 version = "0.0.1"
 
