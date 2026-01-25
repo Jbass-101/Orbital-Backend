@@ -1,8 +1,6 @@
 package com.jbass.routes
 
 import com.jbass.domain.model.ClientMessage
-import com.jbass.domain.model.SubscriptionCommand
-import com.jbass.domain.model.DeviceCommand
 import com.jbass.domain.model.ErrorCode
 import com.jbass.domain.model.ServerMessage
 import com.jbass.domain.repository.DeviceRepository
