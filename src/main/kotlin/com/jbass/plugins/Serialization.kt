@@ -18,6 +18,8 @@ fun Application.configureSerialization() {
             ignoreUnknownKeys = true
             // Ensures the sealed class discriminator is included in the JSON output
             encodeDefaults = true
+            classDiscriminator = "classType"
+
         })
     }
 }
