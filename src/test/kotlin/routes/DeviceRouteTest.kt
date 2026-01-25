@@ -109,4 +109,120 @@ class DeviceRoutesTest {
 
         println("DEBUG: Test completed successfully")
     }
+
+    @Test
+    fun `test valid command updates device and broadcasts state`() = testApplication {
+        // 1. Setup with a known device
+        val mockRepo = InMemoryDeviceRepository(MockDataProvider.devices)
+        val targetDevice = MockDataProvider.devices.first() // Pick the first existing device
+
+        application {
+            install(WebSockets) {
+                contentConverter = KotlinxWebsocketSerializationConverter(jsonConfig)
+            }
+            routing { deviceRoutes(mockRepo) }
+        }
+
+        val client = createClient {
+            install(ClientWebSockets) {
+                contentConverter = KotlinxWebsocketSerializationConverter(jsonConfig)
+            }
+        }
+
+        client.webSocket("/device") {
+            // A. Ignore Initial State
+            incoming.receive()
+
+            // B. Send Valid Command (Toggle Light ON)
+            val validCommand = ClientMessage.Command(
+                requestId = "req-happy-path",
+                deviceId = targetDevice.id,
+                newState = DeviceState.OnOff(true)
+            )
+            send(Frame.Text(jsonConfig.encodeToString<ClientMessage>(validCommand)))
+
+            // C. Verify Success ACK
+            val ackFrame = incoming.receive() as Frame.Text
+            val ackMsg = jsonConfig.decodeFromString<ServerMessage>(ackFrame.readText())
+
+            assertTrue(ackMsg is ServerMessage.CommandAck)
+            assertTrue(ackMsg.success, "Command should succeed")
+            assertEquals("req-happy-path", ackMsg.requestId)
+
+            // D. Verify Broadcast (The confirmation that the light actually turned ON)
+            val broadcastFrame = incoming.receive() as Frame.Text
+            val broadcastMsg = jsonConfig.decodeFromString<ServerMessage>(broadcastFrame.readText())
+
+            assertTrue(broadcastMsg is ServerMessage.StateUpdate)
+            val updatedDevice = broadcastMsg.devices.find { it.id == targetDevice.id }
+            assertTrue(updatedDevice!!.state is DeviceState.OnOff)
+            assertTrue((updatedDevice.state as DeviceState.OnOff).isOn)
+        }
+    }
+
+    @Test
+    fun `test server handles malformed JSON gracefully`() = testApplication {
+        val mockRepo = InMemoryDeviceRepository(emptyList())
+
+        application {
+            install(WebSockets) {
+                contentConverter = KotlinxWebsocketSerializationConverter(jsonConfig)
+            }
+            routing { deviceRoutes(mockRepo) }
+        }
+
+        createClient {
+            install(ClientWebSockets) {
+                contentConverter = KotlinxWebsocketSerializationConverter(jsonConfig)
+            }
+        }.webSocket("/device") {
+            incoming.receive() // Ignore initial state
+
+            // Send Garbage Data
+            send(Frame.Text("{ \"bad\": \"json\" }"))
+
+            // Expect Error ACK
+            val responseFrame = incoming.receive() as Frame.Text
+            val response = jsonConfig.decodeFromString<ServerMessage>(responseFrame.readText())
+
+            assertTrue(response is ServerMessage.CommandAck)
+            assertEquals(false, response.success)
+            assertEquals(ErrorCode.INVALID_COMMAND, response.errorCode)
+        }
+    }
+
+    @Test
+    fun `test subscription command returns success ACK`() = testApplication {
+        val mockRepo = InMemoryDeviceRepository(emptyList())
+
+        application {
+            install(WebSockets) {
+                contentConverter = KotlinxWebsocketSerializationConverter(jsonConfig)
+            }
+            routing { deviceRoutes(mockRepo) }
+        }
+
+        createClient {
+            install(ClientWebSockets) {
+                contentConverter = KotlinxWebsocketSerializationConverter(jsonConfig)
+            }
+        }.webSocket("/device") {
+            incoming.receive() // Ignore initial state
+
+            // Send Subscribe Command
+            val subCommand = ClientMessage.Subscribe(
+                requestId = "sub-req-01",
+                subscribeZones = setOf("zone-1", "zone-2")
+            )
+            send(Frame.Text(jsonConfig.encodeToString<ClientMessage>(subCommand)))
+
+            // Expect Success ACK
+            val responseFrame = incoming.receive() as Frame.Text
+            val response = jsonConfig.decodeFromString<ServerMessage>(responseFrame.readText())
+
+            assertTrue(response is ServerMessage.CommandAck)
+            assertEquals("sub-req-01", response.requestId)
+            assertTrue(response.success)
+        }
+    }
 }
