@@ -10,6 +10,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import io.ktor.websocket.send
+import jdk.internal.net.http.common.Log
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.util.concurrent.CopyOnWriteArraySet
@@ -69,14 +70,24 @@ fun Route.deviceRoutes(repository: DeviceRepository) {
             val initialPayload = ServerMessage.StateUpdate(repository.getAll())
             send(webSocketJson.encodeToString<ServerMessage>(initialPayload))
 
+            val _x = Json.encodeToString(initialPayload)
+            val sizeInBytes = _x.toByteArray(Charsets.UTF_8).size
+
+
+            log.info("Initial payload size: $sizeInBytes bytes")
+
             // The Listen Loop:
             // This loop keeps the connection open and waits for incoming messages.
             for (frame in incoming) {
                 if (frame !is Frame.Text) continue
 
+                log.info("Client frame size: ${frame.data.size} bytes")
+
                 try {
                     //Message from client
                     val msg = frame.readText()
+
+                    log.info(msg)
 
                     //Decode Message
                     //now we handle the possible cases of Client Message
@@ -126,9 +137,11 @@ fun Route.deviceRoutes(repository: DeviceRepository) {
                                     val broadcastJson = webSocketJson.encodeToString<ServerMessage>(broadcastMsg)
 
                                     clients.forEach { c ->
-                                        if (message.zoneId == null || c.subscribedZones.contains(message.zoneId)) {
-                                            c.session.send(broadcastJson)
-                                        }
+//                                        if (message.zoneId == null || c.subscribedZones.contains(message.zoneId)) {
+//                                            c.session.send(broadcastJson)
+//                                        }
+
+                                        c.session.send(broadcastJson)
 
                                     }
                                 }else {
