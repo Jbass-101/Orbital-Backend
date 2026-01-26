@@ -1,9 +1,9 @@
-package com.jbass.application
+package com.jbass.orbital.application
 
-import com.jbass.plugins.configureMonitoring
-import com.jbass.plugins.configureRouting
-import com.jbass.plugins.configureSerialization
-import com.jbass.plugins.configureSockets
+import com.jbass.orbital.plugins.configureMonitoring
+import com.jbass.orbital.plugins.configureRouting
+import com.jbass.orbital.plugins.configureSerialization
+import com.jbass.orbital.plugins.configureSockets
 import io.ktor.server.application.Application
 import io.ktor.server.netty.EngineMain
 

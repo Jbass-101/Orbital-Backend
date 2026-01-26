@@ -1,8 +1,12 @@
 package com.jbass.routes
 
-import com.jbass.data.mock.MockDataProvider
-import com.jbass.data.repository.InMemoryDeviceRepository
-import com.jbass.domain.model.*
+import com.jbass.orbital.data.mock.MockDataProvider
+import com.jbass.orbital.data.repository.InMemoryDeviceRepository
+import com.jbass.orbital.domain.model.ClientMessage
+import com.jbass.orbital.domain.model.DeviceState
+import com.jbass.orbital.domain.model.ErrorCode
+import com.jbass.orbital.domain.model.ServerMessage
+import com.jbass.orbital.routes.deviceRoutes
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.serialization.kotlinx.*
 import io.ktor.server.testing.*
@@ -14,7 +18,6 @@ import kotlin.test.assertTrue
 
 // EXPLICIT IMPORTS
 import io.ktor.server.application.install
-import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.websocket.WebSockets
 import io.ktor.server.routing.routing
 import io.ktor.client.plugins.websocket.WebSockets as ClientWebSockets

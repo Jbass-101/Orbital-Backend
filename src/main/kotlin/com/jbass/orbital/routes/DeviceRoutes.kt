@@ -1,15 +1,16 @@
-package com.jbass.routes
+package com.jbass.orbital.routes
 
-import com.jbass.domain.model.ClientMessage
-import com.jbass.domain.model.ErrorCode
-import com.jbass.domain.model.ServerMessage
-import com.jbass.domain.repository.DeviceRepository
+import com.jbass.orbital.domain.model.ClientMessage
+import com.jbass.orbital.domain.model.ErrorCode
+import com.jbass.orbital.domain.model.ServerMessage
+import com.jbass.orbital.domain.repository.DeviceRepository
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import io.ktor.websocket.send
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.util.concurrent.CopyOnWriteArraySet
 
@@ -144,7 +145,7 @@ fun Route.deviceRoutes(repository: DeviceRepository) {
                         }
                     }
 
-                } catch (e: kotlinx.serialization.SerializationException) {
+                } catch (e: SerializationException) {
                     // Handle JSON parsing errors
                     val errorAck = ServerMessage.CommandAck(
                         requestId = "",

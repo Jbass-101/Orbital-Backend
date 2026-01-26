@@ -1,4 +1,4 @@
-package com.jbass.util
+package com.jbass.orbital.util
 
 
 import java.util.UUID

@@ -1,6 +1,6 @@
 package com.jbass
 
-import com.jbass.application.module
+import com.jbass.orbital.application.module
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*

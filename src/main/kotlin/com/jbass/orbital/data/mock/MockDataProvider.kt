@@ -1,13 +1,13 @@
-package com.jbass.data.mock
+package com.jbass.orbital.data.mock
 
-import com.jbass.domain.model.ClimateMode
-import com.jbass.domain.model.DeviceCategory
-import com.jbass.domain.model.DeviceMetadata
-import com.jbass.domain.model.DeviceState
-import com.jbass.domain.model.DeviceType
-import com.jbass.domain.model.SmartDevice
-import com.jbass.domain.model.Zone
-import com.jbass.util.IdGenerator
+import com.jbass.orbital.domain.model.ClimateMode
+import com.jbass.orbital.domain.model.DeviceCategory
+import com.jbass.orbital.domain.model.DeviceMetadata
+import com.jbass.orbital.domain.model.DeviceState
+import com.jbass.orbital.domain.model.DeviceType
+import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.Zone
+import com.jbass.orbital.util.IdGenerator
 
 
 import kotlin.random.Random

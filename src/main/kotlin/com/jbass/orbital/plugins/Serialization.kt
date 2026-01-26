@@ -1,4 +1,4 @@
-package com.jbass.plugins
+package com.jbass.orbital.plugins
 
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*

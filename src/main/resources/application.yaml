@@ -1,6 +1,6 @@
 ktor:
   application:
     modules:
-      - com.jbass.application.ApplicationKt.module
+      - com.jbass.orbital.application.ApplicationKt.module
   deployment:
     port: 9090
