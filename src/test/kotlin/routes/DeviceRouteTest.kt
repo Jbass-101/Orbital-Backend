@@ -156,7 +156,7 @@ class DeviceRoutesTest {
             val broadcastFrame = incoming.receive() as Frame.Text
             val broadcastMsg = jsonConfig.decodeFromString<ServerMessage>(broadcastFrame.readText())
 
-            assertTrue(broadcastMsg is ServerMessage.StateUpdate)
+            assertTrue(broadcastMsg is ServerMessage.FullStateUpdate)
             val updatedDevice = broadcastMsg.devices.find { it.id == targetDevice.id }
             assertTrue(updatedDevice!!.state is DeviceState.OnOff)
             assertTrue((updatedDevice.state as DeviceState.OnOff).isOn)

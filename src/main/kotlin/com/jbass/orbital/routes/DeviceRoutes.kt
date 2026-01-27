@@ -10,7 +10,6 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import io.ktor.websocket.send
-import jdk.internal.net.http.common.Log
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.util.concurrent.CopyOnWriteArraySet
@@ -67,7 +66,7 @@ fun Route.deviceRoutes(repository: DeviceRepository) {
             // Immediately send the full current state of the house.
             // This ensures the UI is never empty while waiting for the first update.
             // We wrap this in a StateUpdate message so the client parser remains consistent
-            val initialPayload = ServerMessage.StateUpdate(repository.getAll())
+            val initialPayload = ServerMessage.FullStateUpdate(repository.getAll())
             send(webSocketJson.encodeToString<ServerMessage>(initialPayload))
 
             val _x = Json.encodeToString(initialPayload)
@@ -133,16 +132,13 @@ fun Route.deviceRoutes(repository: DeviceRepository) {
 
                                     // Broadcast State Change to EVERYONE (including sender)
                                     //Ensures source of truth
-                                    val broadcastMsg = ServerMessage.StateUpdate(listOf(updatedDevice))
+                                    val broadcastMsg = ServerMessage.DeltaStateUpdate(listOf(updatedDevice))
                                     val broadcastJson = webSocketJson.encodeToString<ServerMessage>(broadcastMsg)
 
                                     clients.forEach { c ->
-//                                        if (message.zoneId == null || c.subscribedZones.contains(message.zoneId)) {
-//                                            c.session.send(broadcastJson)
-//                                        }
-
-                                        c.session.send(broadcastJson)
-
+                                        if (message.zoneId == null || c.subscribedZones.contains(message.zoneId)) {
+                                            c.session.send(broadcastJson)
+                                        }
                                     }
                                 }else {
                                     // CASE: DB Update Failed
