@@ -12,7 +12,7 @@ import com.jbass.orbital.util.IdGenerator
 
 import kotlin.random.Random
 
-object MockDataProvider {
+object MockDeviceDataProvider {
 
     val livingRoom = Zone(
         id = IdGenerator.newId(),

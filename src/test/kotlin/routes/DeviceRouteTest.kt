@@ -1,6 +1,6 @@
 package com.jbass.routes
 
-import com.jbass.orbital.data.mock.MockDataProvider
+import com.jbass.orbital.data.mock.MockDeviceDataProvider
 import com.jbass.orbital.data.repository.InMemoryDeviceRepository
 import com.jbass.orbital.domain.model.ClientMessage
 import com.jbass.orbital.domain.model.DeviceState
@@ -36,7 +36,7 @@ class DeviceRoutesTest {
     @Test
     fun `test client receives ACK after command with debug`() = testApplication {
         // 1. SETUP SERVER
-        val mockRepo = InMemoryDeviceRepository(MockDataProvider.devices)
+        val mockRepo = InMemoryDeviceRepository(MockDeviceDataProvider.devices)
 
         application {
             install(WebSockets) {
@@ -116,8 +116,8 @@ class DeviceRoutesTest {
     @Test
     fun `test valid command updates device and broadcasts state`() = testApplication {
         // 1. Setup with a known device
-        val mockRepo = InMemoryDeviceRepository(MockDataProvider.devices)
-        val targetDevice = MockDataProvider.devices.first() // Pick the first existing device
+        val mockRepo = InMemoryDeviceRepository(MockDeviceDataProvider.devices)
+        val targetDevice = MockDeviceDataProvider.devices.first() // Pick the first existing device
 
         application {
             install(WebSockets) {
