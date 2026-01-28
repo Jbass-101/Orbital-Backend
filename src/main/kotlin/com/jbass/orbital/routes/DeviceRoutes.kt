@@ -4,6 +4,7 @@ import com.jbass.orbital.domain.model.ClientMessage
 import com.jbass.orbital.domain.model.ErrorCode
 import com.jbass.orbital.domain.model.ServerMessage
 import com.jbass.orbital.domain.repository.DeviceRepository
+import com.jbass.orbital.domain.repository.WeatherRepository
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -47,7 +48,7 @@ private val webSocketJson = Json {
 
 // ---- WebSocket route ----
 
-fun Route.deviceRoutes(repository: DeviceRepository) {
+fun Route.deviceRoutes(weatherRepository: WeatherRepository, deviceRepository: DeviceRepository) {
     /**
      * Defines the endpoint: ws://[server-ip]:[port]/device
      * The app connects here to start the real-time stream.
@@ -66,7 +67,7 @@ fun Route.deviceRoutes(repository: DeviceRepository) {
             // Immediately send the full current state of the house.
             // This ensures the UI is never empty while waiting for the first update.
             // We wrap this in a StateUpdate message so the client parser remains consistent
-            val initialPayload = ServerMessage.FullStateUpdate(repository.getAll())
+            val initialPayload = ServerMessage.FullStateUpdate(weatherRepository.getWeather(),deviceRepository.getAll())
             send(webSocketJson.encodeToString<ServerMessage>(initialPayload))
 
             val _x = Json.encodeToString(initialPayload)
@@ -74,6 +75,7 @@ fun Route.deviceRoutes(repository: DeviceRepository) {
 
 
             log.info("Initial payload size: $sizeInBytes bytes")
+            log.info("Initial payload : \n $initialPayload")
 
             // The Listen Loop:
             // This loop keeps the connection open and waits for incoming messages.
@@ -104,7 +106,7 @@ fun Route.deviceRoutes(repository: DeviceRepository) {
 
                         }
                         is ClientMessage.Command -> {
-                            val device = repository.getById(message.deviceId)
+                            val device = deviceRepository.getById(message.deviceId)
 
                             if (device == null) {
                                 // CASE: Device Not Found - Send Failure ACK
@@ -120,7 +122,7 @@ fun Route.deviceRoutes(repository: DeviceRepository) {
                                 // CASE: Valid Device - We Copy the existing device and update it with the new state
                                 val updatedDevice = device.copy(state = message.newState)
 
-                                if (repository.update(updatedDevice)) {
+                                if (deviceRepository.update(updatedDevice)) {
                                     // 1. Send Success ACK to the SENDER
                                     val successAck = ServerMessage.CommandAck(
                                         requestId = message.requestId,
