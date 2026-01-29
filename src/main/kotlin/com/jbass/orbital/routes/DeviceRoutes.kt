@@ -5,6 +5,7 @@ import com.jbass.orbital.domain.model.ErrorCode
 import com.jbass.orbital.domain.model.ServerMessage
 import com.jbass.orbital.domain.repository.DeviceRepository
 import com.jbass.orbital.domain.repository.WeatherRepository
+import com.jbass.orbital.domain.repository.ZoneRepository
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -48,7 +49,9 @@ private val webSocketJson = Json {
 
 // ---- WebSocket route ----
 
-fun Route.deviceRoutes(weatherRepository: WeatherRepository, deviceRepository: DeviceRepository) {
+fun Route.deviceRoutes(weatherRepository: WeatherRepository,
+                       deviceRepository: DeviceRepository,
+                       zoneRepository: ZoneRepository) {
     /**
      * Defines the endpoint: ws://[server-ip]:[port]/device
      * The app connects here to start the real-time stream.
@@ -67,7 +70,10 @@ fun Route.deviceRoutes(weatherRepository: WeatherRepository, deviceRepository: D
             // Immediately send the full current state of the house.
             // This ensures the UI is never empty while waiting for the first update.
             // We wrap this in a StateUpdate message so the client parser remains consistent
-            val initialPayload = ServerMessage.FullStateUpdate(weatherRepository.getWeather(),deviceRepository.getAll())
+            val initialPayload = ServerMessage.FullStateUpdate(
+                weatherRepository.getWeather(),
+                deviceRepository.getAll(),
+                zoneRepository.getAllZones())
             send(webSocketJson.encodeToString<ServerMessage>(initialPayload))
 
             val _x = Json.encodeToString(initialPayload)
