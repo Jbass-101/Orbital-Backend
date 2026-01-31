@@ -56,7 +56,7 @@ fun Route.deviceRoutes(weatherRepository: WeatherRepository,
      * Defines the endpoint: ws://[server-ip]:[port]/device
      * The app connects here to start the real-time stream.
      */
-    webSocket("/device") {
+    webSocket("/orbital/device") {
 
         // Connection Lifecycle: Handshake complete.
         // Wrap this new connection and add it to our global tracking list.
