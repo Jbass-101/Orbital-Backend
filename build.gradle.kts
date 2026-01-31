@@ -1,5 +1,6 @@
 val kotlin_version: String by project
 val logback_version: String by project
+val jmdns_version: String by project
 
 plugins {
     kotlin("jvm") version "2.2.21"
@@ -32,6 +33,7 @@ application {
 }
 
 dependencies {
+    implementation("org.jmdns:jmdns:$jmdns_version")
     implementation("io.ktor:ktor-server-core")
     implementation("io.ktor:ktor-server-websockets")
     implementation("io.ktor:ktor-server-content-negotiation")

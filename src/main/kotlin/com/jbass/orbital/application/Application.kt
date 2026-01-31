@@ -1,5 +1,6 @@
 package com.jbass.orbital.application
 
+import com.jbass.orbital.plugins.configureDiscovery
 import com.jbass.orbital.plugins.configureMonitoring
 import com.jbass.orbital.plugins.configureRouting
 import com.jbass.orbital.plugins.configureSerialization
@@ -12,6 +13,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    configureDiscovery()
     configureSockets()
     configureSerialization()
     configureMonitoring()
