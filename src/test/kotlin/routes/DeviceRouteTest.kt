@@ -43,7 +43,7 @@ class DeviceRoutesTest {
                 contentConverter = KotlinxWebsocketSerializationConverter(jsonConfig)
             }
             routing {
-                deviceRoutes(mockRepo)
+                deviceRoutes()
             }
         }
 
@@ -123,7 +123,7 @@ class DeviceRoutesTest {
             install(WebSockets) {
                 contentConverter = KotlinxWebsocketSerializationConverter(jsonConfig)
             }
-            routing { deviceRoutes(mockRepo) }
+            routing { deviceRoutes() }
         }
 
         val client = createClient {
@@ -171,7 +171,7 @@ class DeviceRoutesTest {
             install(WebSockets) {
                 contentConverter = KotlinxWebsocketSerializationConverter(jsonConfig)
             }
-            routing { deviceRoutes(mockRepo) }
+            routing { deviceRoutes() }
         }
 
         createClient {
@@ -202,7 +202,7 @@ class DeviceRoutesTest {
             install(WebSockets) {
                 contentConverter = KotlinxWebsocketSerializationConverter(jsonConfig)
             }
-            routing { deviceRoutes(mockRepo) }
+            routing { deviceRoutes() }
         }
 
         createClient {
