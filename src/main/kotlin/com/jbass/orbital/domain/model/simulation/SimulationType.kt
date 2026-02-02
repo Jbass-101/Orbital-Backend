@@ -1,4 +1,4 @@
-package com.jbass.orbital.domain.model
+package com.jbass.orbital.domain.model.simulation
 
 // src/main/kotlin/com/jbass/orbital/domain/simulation/SimulationTask.kt
 enum class SimulationType {

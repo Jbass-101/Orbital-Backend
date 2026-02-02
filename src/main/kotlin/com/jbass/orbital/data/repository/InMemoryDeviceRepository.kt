@@ -1,6 +1,6 @@
 package com.jbass.orbital.data.repository
 
-import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.domain.repository.DeviceRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

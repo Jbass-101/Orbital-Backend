@@ -1,5 +1,7 @@
-package com.jbass.orbital.domain.model
+package com.jbass.orbital.domain.model.device
 
+import com.jbass.orbital.domain.model.device.DeviceMetadata
+import com.jbass.orbital.domain.model.device.DeviceType
 import kotlinx.serialization.Serializable
 
 /**

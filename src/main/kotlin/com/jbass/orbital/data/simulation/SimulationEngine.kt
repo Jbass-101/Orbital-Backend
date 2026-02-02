@@ -1,7 +1,7 @@
 package com.jbass.orbital.data.simulation
 
 
-import com.jbass.orbital.domain.model.DeviceState
+import com.jbass.orbital.domain.model.device.DeviceState
 import com.jbass.orbital.domain.model.weather.WeatherCondition
 import com.jbass.orbital.domain.repository.DeviceRepository
 import com.jbass.orbital.domain.repository.WeatherRepository

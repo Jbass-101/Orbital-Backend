@@ -2,10 +2,10 @@ package com.jbass.routes
 
 import com.jbass.orbital.data.mock.MockDeviceDataProvider
 import com.jbass.orbital.data.repository.InMemoryDeviceRepository
-import com.jbass.orbital.domain.model.ClientMessage
-import com.jbass.orbital.domain.model.DeviceState
-import com.jbass.orbital.domain.model.ErrorCode
-import com.jbass.orbital.domain.model.ServerMessage
+import com.jbass.orbital.domain.model.message.ClientMessage
+import com.jbass.orbital.domain.model.device.DeviceState
+import com.jbass.orbital.domain.model.message.ErrorCode
+import com.jbass.orbital.domain.model.message.ServerMessage
 import com.jbass.orbital.routes.deviceRoutes
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.serialization.kotlinx.*

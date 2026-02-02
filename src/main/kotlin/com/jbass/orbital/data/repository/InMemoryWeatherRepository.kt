@@ -1,6 +1,6 @@
 package com.jbass.orbital.data.repository
 
-import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.domain.model.weather.CurrentWeather
 import com.jbass.orbital.domain.model.weather.WeatherCondition
 import com.jbass.orbital.domain.repository.WeatherRepository

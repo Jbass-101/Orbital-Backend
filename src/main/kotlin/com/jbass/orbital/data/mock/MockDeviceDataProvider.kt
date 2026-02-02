@@ -1,12 +1,12 @@
 package com.jbass.orbital.data.mock
 
-import com.jbass.orbital.domain.model.ClimateMode
-import com.jbass.orbital.domain.model.DeviceCategory
-import com.jbass.orbital.domain.model.DeviceMetadata
-import com.jbass.orbital.domain.model.DeviceState
-import com.jbass.orbital.domain.model.DeviceType
-import com.jbass.orbital.domain.model.SmartDevice
-import com.jbass.orbital.domain.model.Zone
+import com.jbass.orbital.domain.model.device.ClimateMode
+import com.jbass.orbital.domain.model.device.DeviceCategory
+import com.jbass.orbital.domain.model.device.DeviceMetadata
+import com.jbass.orbital.domain.model.device.DeviceState
+import com.jbass.orbital.domain.model.device.DeviceType
+import com.jbass.orbital.domain.model.device.SmartDevice
+import com.jbass.orbital.domain.model.zone.Zone
 import com.jbass.orbital.util.IdGenerator
 
 

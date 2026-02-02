@@ -1,6 +1,6 @@
 package com.jbass.orbital.data.repository
 
-import com.jbass.orbital.domain.model.Zone
+import com.jbass.orbital.domain.model.zone.Zone
 import com.jbass.orbital.domain.repository.ZoneRepository
 import java.util.concurrent.ConcurrentHashMap
 

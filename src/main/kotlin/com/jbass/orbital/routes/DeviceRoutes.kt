@@ -1,8 +1,8 @@
 package com.jbass.orbital.routes
 
-import com.jbass.orbital.domain.model.ClientMessage
-import com.jbass.orbital.domain.model.ErrorCode
-import com.jbass.orbital.domain.model.ServerMessage
+import com.jbass.orbital.domain.model.message.ClientMessage
+import com.jbass.orbital.domain.model.message.ErrorCode
+import com.jbass.orbital.domain.model.message.ServerMessage
 import com.jbass.orbital.domain.repository.DeviceRepository
 import com.jbass.orbital.domain.repository.WeatherRepository
 import com.jbass.orbital.domain.repository.ZoneRepository

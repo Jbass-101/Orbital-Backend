@@ -1,8 +1,6 @@
-package com.jbass.orbital.domain.model
-
+package com.jbass.orbital.domain.model.device
 
 import kotlinx.serialization.Serializable
-
 
 /**
  * A list of common devices in their category and flag for if it can be added to a scene
