@@ -37,8 +37,9 @@ dependencies {
     //jmDNS
     implementation("org.jmdns:jmdns:$jmdns_version")
     //Koin
-    implementation("io.insert-koin:koin-ktor:${koin_version}")
-    implementation("io.insert-koin:koin-logger-slf4j:${koin_version}")
+    implementation(platform("io.insert-koin:koin-bom:$koin_version"))
+    implementation("io.insert-koin:koin-ktor")
+    implementation("io.insert-koin:koin-logger-slf4j")
     //Others
     implementation("io.ktor:ktor-server-core")
     implementation("io.ktor:ktor-server-websockets")
