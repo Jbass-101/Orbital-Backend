@@ -12,6 +12,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import io.ktor.websocket.send
+import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import org.koin.ktor.ext.inject
@@ -86,6 +87,37 @@ fun Route.deviceRoutes() {
             log.info("Initial payload size: $sizeInBytes bytes")
             log.info("Initial payload : \n $initialPayload")
 
+
+            // ---- Background Broadcast Collector ----
+// This launches a concurrent "job" tied to this specific WebSocket session
+            launch {
+                deviceRepository.deviceUpdate.collect { updatedDevice ->
+                    // 1. Filter: Does this client care about this zone?
+                    if (client.subscribedZones.isEmpty() || client.subscribedZones.contains(updatedDevice.zoneId)) {
+
+                        // 2. Wrap in a DeltaUpdate
+                        val message = ServerMessage.DeltaStateUpdate(listOf(updatedDevice))
+                        val json = webSocketJson.encodeToString<ServerMessage>(message)
+
+                        // 3. Push to the UI
+                        try {
+
+
+                            val y = Json.encodeToString(message)
+                            val yBytes = y.toByteArray(Charsets.UTF_8).size
+
+                            log.info("Device update : \n $message")
+
+                            log.info("Device payload: $yBytes bytes")
+                            send(json)
+                        } catch (e: Exception) {
+                            // If sending fails (e.g. abrupt disconnect), this collector job will die naturally
+                            log.error("Failed to push simulation update to client", e)
+                        }
+                    }
+                }
+            }
+
             // The Listen Loop:
             // This loop keeps the connection open and waits for incoming messages.
             for (frame in incoming) {
@@ -139,18 +171,6 @@ fun Route.deviceRoutes() {
                                     )
                                     send(webSocketJson.encodeToString<ServerMessage>(successAck))
 
-
-
-                                    // Broadcast State Change to EVERYONE (including sender)
-                                    //Ensures source of truth
-                                    val broadcastMsg = ServerMessage.DeltaStateUpdate(listOf(updatedDevice))
-                                    val broadcastJson = webSocketJson.encodeToString<ServerMessage>(broadcastMsg)
-
-                                    clients.forEach { c ->
-                                        if (message.zoneId == null || c.subscribedZones.contains(message.zoneId)) {
-                                            c.session.send(broadcastJson)
-                                        }
-                                    }
                                 }else {
                                     // CASE: DB Update Failed
                                     send(webSocketJson.encodeToString<ServerMessage>(ServerMessage.CommandAck(
