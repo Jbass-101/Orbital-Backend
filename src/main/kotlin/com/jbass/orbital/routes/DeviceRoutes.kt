@@ -53,9 +53,9 @@ private val webSocketJson = Json {
 
 fun Route.deviceRoutes() {
 
-    val weatherRepository by inject<WeatherRepository>(named("mock"))
-    val zoneRepository by inject<ZoneRepository>(named("mock"))
-    val deviceRepository by inject<DeviceRepository>(named("mock"))
+    val weatherRepository by inject<WeatherRepository>()
+    val zoneRepository by inject<ZoneRepository>()
+    val deviceRepository by inject<DeviceRepository>()
     /**
      * Defines the endpoint: ws://[server-ip]:[port]/device
      * The app connects here to start the real-time stream.

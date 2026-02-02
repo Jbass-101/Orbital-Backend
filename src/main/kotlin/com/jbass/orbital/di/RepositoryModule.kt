@@ -14,7 +14,6 @@ import org.koin.dsl.module
 val repositoryModule = module {
 
     single<DeviceRepository>(
-        named("mock")
     ) {
         InMemoryDeviceRepository(
             initialDevices = MockDeviceDataProvider.devices
@@ -22,7 +21,6 @@ val repositoryModule = module {
     }
 
     single<WeatherRepository>(
-        named("mock")
     ) {
         InMemoryWeatherRepository(
             weather = randomCurrentWeather(),
@@ -30,7 +28,6 @@ val repositoryModule = module {
     }
 
     single<ZoneRepository>(
-        named("mock")
     ) {
         InMemoryZoneRepository(
             initialZones = MockDeviceDataProvider.zones
