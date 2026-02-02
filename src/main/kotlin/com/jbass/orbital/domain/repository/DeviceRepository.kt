@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.SharedFlow
 
 /**Interface so we can attach to Remote or local database*/
 interface DeviceRepository {
-    val deviceUpdate: SharedFlow<SmartDevice>
+    val deviceUpdates: SharedFlow<SmartDevice>
     fun getAllDevices(): List<SmartDevice>
     fun getDeviceById(id: String): SmartDevice?
     fun updateDevice(device: SmartDevice): Boolean

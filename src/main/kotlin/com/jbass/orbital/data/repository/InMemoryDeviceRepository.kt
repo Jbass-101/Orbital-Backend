@@ -16,7 +16,7 @@ class InMemoryDeviceRepository(
     // In InMemoryDeviceRepository.kt
     private val _deviceUpdate = MutableSharedFlow<SmartDevice>(extraBufferCapacity = 64)
 
-    override val deviceUpdate = _deviceUpdate.asSharedFlow()
+    override val deviceUpdates = _deviceUpdate.asSharedFlow()
 
     init {
         initialDevices.forEach { devices[it.id] = it }

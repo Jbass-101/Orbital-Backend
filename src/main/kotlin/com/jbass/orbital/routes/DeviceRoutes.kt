@@ -91,7 +91,7 @@ fun Route.deviceRoutes() {
             // ---- Background Broadcast Collector ----
 // This launches a concurrent "job" tied to this specific WebSocket session
             launch {
-                deviceRepository.deviceUpdate.collect { updatedDevice ->
+                deviceRepository.deviceUpdates.collect { updatedDevice ->
                     // 1. Filter: Does this client care about this zone?
                     if (client.subscribedZones.isEmpty() || client.subscribedZones.contains(updatedDevice.zoneId)) {
 
@@ -114,6 +114,30 @@ fun Route.deviceRoutes() {
                             // If sending fails (e.g. abrupt disconnect), this collector job will die naturally
                             log.error("Failed to push simulation update to client", e)
                         }
+                    }
+                }
+            }
+
+            launch {
+                weatherRepository.weatherUpdates.collect { updatedWeather ->
+                    // Using FullStateUpdate as a container for the new weather data
+                    val message = ServerMessage.DeltaWeatherUpdate(
+                        weather = updatedWeather
+                    )
+
+                    try {
+
+
+                        val y = Json.encodeToString(message)
+                        val yBytes = y.toByteArray(Charsets.UTF_8).size
+
+                        log.info("Weather update : \n $message")
+
+                        log.info("Weather payload: $yBytes bytes")
+
+                        send(webSocketJson.encodeToString<ServerMessage>(message))
+                    } catch (e: Exception) {
+                        log.error("Weather broadcast failed", e)
                     }
                 }
             }
