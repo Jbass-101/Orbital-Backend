@@ -4,6 +4,6 @@ import com.jbass.orbital.data.simulation.SimulationEngine
 import org.koin.dsl.module
 
 val simulationEngineModule = module {
-    single { SimulationEngine(get()) }
+    single { SimulationEngine(get(),get()) }
 
 }
