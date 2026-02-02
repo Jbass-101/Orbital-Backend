@@ -2,9 +2,11 @@ package com.jbass.orbital.di
 
 import com.jbass.orbital.data.mock.MockDeviceDataProvider
 import com.jbass.orbital.data.mock.randomCurrentWeather
+import com.jbass.orbital.data.repository.InMemoryAuditRepository
 import com.jbass.orbital.data.repository.InMemoryDeviceRepository
 import com.jbass.orbital.data.repository.InMemoryWeatherRepository
 import com.jbass.orbital.data.repository.InMemoryZoneRepository
+import com.jbass.orbital.domain.repository.AuditRepository
 import com.jbass.orbital.domain.repository.DeviceRepository
 import com.jbass.orbital.domain.repository.WeatherRepository
 import com.jbass.orbital.domain.repository.ZoneRepository
@@ -33,4 +35,6 @@ val repositoryModule = module {
             initialZones = MockDeviceDataProvider.zones
         )
     }
+    single<AuditRepository> { InMemoryAuditRepository() }
+
 }

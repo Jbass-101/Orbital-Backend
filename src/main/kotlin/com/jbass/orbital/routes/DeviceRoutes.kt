@@ -1,5 +1,6 @@
 package com.jbass.orbital.routes
 
+import com.jbass.orbital.domain.model.audit.AuditLog
 import com.jbass.orbital.domain.model.message.ClientMessage
 import com.jbass.orbital.domain.model.message.ErrorCode
 import com.jbass.orbital.domain.model.message.ServerMessage
@@ -175,12 +176,16 @@ fun Route.deviceRoutes() {
 
                             if (device == null) {
                                 // CASE: Device Not Found - Send Failure ACK
+
+                                //Log!
+
                                 val errorAck = ServerMessage.CommandAck(
                                     requestId = message.requestId,
                                     success = false,
                                     errorCode = ErrorCode.DEVICE_NOT_FOUND,
                                     message = "Device ID ${message.deviceId} does not exist."
                                 )
+
                                 send(webSocketJson.encodeToString<ServerMessage>(errorAck))
 
                             }else {
@@ -188,12 +193,15 @@ fun Route.deviceRoutes() {
                                 val updatedDevice = device.copy(state = message.newState)
 
                                 if (deviceRepository.updateDevice(updatedDevice)) {
+
                                     // 1. Send Success ACK to the SENDER
                                     val successAck = ServerMessage.CommandAck(
                                         requestId = message.requestId,
                                         success = true
                                     )
                                     send(webSocketJson.encodeToString<ServerMessage>(successAck))
+
+
 
                                 }else {
                                     // CASE: DB Update Failed
