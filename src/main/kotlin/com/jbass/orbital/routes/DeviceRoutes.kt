@@ -14,6 +14,8 @@ import io.ktor.websocket.*
 import io.ktor.websocket.send
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import org.koin.core.qualifier.named
+import org.koin.ktor.ext.inject
 import java.util.concurrent.CopyOnWriteArraySet
 
 // ---- Client session tracking ----
@@ -49,9 +51,11 @@ private val webSocketJson = Json {
 
 // ---- WebSocket route ----
 
-fun Route.deviceRoutes(weatherRepository: WeatherRepository,
-                       deviceRepository: DeviceRepository,
-                       zoneRepository: ZoneRepository) {
+fun Route.deviceRoutes() {
+
+    val weatherRepository by inject<WeatherRepository>(named("mock"))
+    val zoneRepository by inject<ZoneRepository>(named("mock"))
+    val deviceRepository by inject<DeviceRepository>(named("mock"))
     /**
      * Defines the endpoint: ws://[server-ip]:[port]/device
      * The app connects here to start the real-time stream.

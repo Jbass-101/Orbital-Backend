@@ -10,21 +10,7 @@ import io.ktor.server.routing.*
 import com.jbass.orbital.routes.deviceRoutes
 
 fun Application.configureRouting() {
-
-    val deviceRepository = InMemoryDeviceRepository(
-        initialDevices = MockDeviceDataProvider.devices
-    )
-    val weatherRepository = InMemoryWeatherRepository(
-        weather = randomCurrentWeather(),
-    )
-    val zoneRepository = InMemoryZoneRepository(
-        initialZones = MockDeviceDataProvider.zones
-    )
-
     routing {
-        deviceRoutes(
-            weatherRepository,
-            deviceRepository,
-            zoneRepository)
+        deviceRoutes()
     }
 }
