@@ -6,7 +6,7 @@ import com.jbass.orbital.domain.repository.DeviceRepository
 import kotlinx.coroutines.*
 import kotlin.random.Random
 
-class DeviceSimulationEngine(
+class SimulationEngine(
     private val deviceRepository: DeviceRepository,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 ) {
