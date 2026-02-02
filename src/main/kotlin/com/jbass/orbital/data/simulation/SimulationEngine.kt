@@ -25,7 +25,7 @@ class SimulationEngine(
     }
     // Inside DeviceSimulationEngine.kt
     private suspend fun simulateStep() {
-        val devices = deviceRepository.getAll()
+        val devices = deviceRepository.getAllDevices()
 
         devices.forEach { device ->
             val newState = when (val currentState = device.state) {
@@ -52,7 +52,7 @@ class SimulationEngine(
             )
 
             // Update the repository
-            deviceRepository.update(device.copy(state = newState, metadata = newMetadata))
+            deviceRepository.updateDevice(device.copy(state = newState, metadata = newMetadata))
         }
     }
 

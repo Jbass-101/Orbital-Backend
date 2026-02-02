@@ -14,12 +14,12 @@ class InMemoryDeviceRepository(
         initialDevices.forEach { devices[it.id] = it }
     }
 
-    override fun getAll(): List<SmartDevice> =
+    override fun getAllDevices(): List<SmartDevice> =
         devices.values.toList()
 
-    override fun getById(id: String): SmartDevice? =
+    override fun getDeviceById(id: String): SmartDevice? =
         devices[id]
 
-    override fun update(device: SmartDevice): Boolean =
+    override fun updateDevice(device: SmartDevice): Boolean =
         devices.replace(device.id, device) != null
 }

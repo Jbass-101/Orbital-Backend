@@ -8,6 +8,6 @@ class InMemoryWeatherRepository(
     private val weather: CurrentWeather,
 ) : WeatherRepository {
 
-    override fun getWeather(): CurrentWeather =
+    override fun getCurrentWeather(): CurrentWeather =
         weather
 }

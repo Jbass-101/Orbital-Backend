@@ -14,7 +14,6 @@ import io.ktor.websocket.*
 import io.ktor.websocket.send
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import org.koin.core.qualifier.named
 import org.koin.ktor.ext.inject
 import java.util.concurrent.CopyOnWriteArraySet
 
@@ -75,8 +74,8 @@ fun Route.deviceRoutes() {
             // This ensures the UI is never empty while waiting for the first update.
             // We wrap this in a StateUpdate message so the client parser remains consistent
             val initialPayload = ServerMessage.FullStateUpdate(
-                weatherRepository.getWeather(),
-                deviceRepository.getAll(),
+                weatherRepository.getCurrentWeather(),
+                deviceRepository.getAllDevices(),
                 zoneRepository.getAllZones())
             send(webSocketJson.encodeToString<ServerMessage>(initialPayload))
 
@@ -116,7 +115,7 @@ fun Route.deviceRoutes() {
 
                         }
                         is ClientMessage.Command -> {
-                            val device = deviceRepository.getById(message.deviceId)
+                            val device = deviceRepository.getDeviceById(message.deviceId)
 
                             if (device == null) {
                                 // CASE: Device Not Found - Send Failure ACK
@@ -132,7 +131,7 @@ fun Route.deviceRoutes() {
                                 // CASE: Valid Device - We Copy the existing device and update it with the new state
                                 val updatedDevice = device.copy(state = message.newState)
 
-                                if (deviceRepository.update(updatedDevice)) {
+                                if (deviceRepository.updateDevice(updatedDevice)) {
                                     // 1. Send Success ACK to the SENDER
                                     val successAck = ServerMessage.CommandAck(
                                         requestId = message.requestId,
